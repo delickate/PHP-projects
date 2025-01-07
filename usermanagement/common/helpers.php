@@ -25,7 +25,8 @@ function base_url($path = '')
 
 
 
-$user_id = $_SESSION['user_id'];
+$user_id =  $_SESSION['user_id'];
+$currentUserId = $_SESSION['user_id'] ?? 0;
 
 // Fetch user's roles
 $stmt = $pdo->prepare('SELECT role_id FROM users_roles WHERE user_id = ?');
@@ -40,4 +41,39 @@ $stmt = $pdo->prepare("SELECT m.name, m.url FROM modules m
 $stmt->execute($user_roles);
 $modules = $stmt->fetchAll();
 
+
+
+
+// Check if a user has the right to add
+function hasAddRight($userId, $moduleId, $pdo) 
+{
+    return hasRight($userId, $moduleId, 'Add', $pdo);
+}
+
+// Check if a user has the right to edit
+function hasEditRight($userId, $moduleId, $pdo) 
+{
+    return hasRight($userId, $moduleId, 'Edit', $pdo);
+}
+
+// Check if a user has the right to delete
+function hasDeleteRight($userId, $moduleId, $pdo) 
+{
+    return hasRight($userId, $moduleId, 'Delete', $pdo);
+}
+
+// Generic function to check a specific right
+function hasRight($userId, $moduleId, $rightName, $pdo) 
+{
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM roles_modules_permissions_rights pmr
+        INNER JOIN roles_modules_permissions p ON pmr.roles_modules_permissions_id = p.id
+        INNER JOIN rights r ON pmr.rights_id = r.id
+        INNER JOIN users_roles ur ON p.role_id = ur.role_id
+        WHERE ur.user_id = ? AND p.module_id = ? AND r.name = ?
+    ");
+    $stmt->execute([$userId, $moduleId, $rightName]); //echo $stmt->fetchColumn();
+    return $stmt->fetchColumn() > 0;
+}
 ?>

@@ -22,14 +22,16 @@ if (!$user) {
 </head>
 <body>
 	 <?php include '../common/navigations.php'; ?>
-	 
+
     <h1>User Details</h1>
     <p><strong>Name:</strong> <?php echo $user['name']; ?></p>
     <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
     <p><strong>Phone:</strong> <?php echo $user['phone']; ?></p>
     <p><strong>Status:</strong> <?php echo $user['status'] ? 'Active' : 'Inactive'; ?></p>
     <p><strong>Profile Picture:</strong><br>
-        <img src="../uploads/images/profile/<?php echo $user['picture']; ?>" alt="Profile Picture" width="100">
+        <img src="<?php echo IMAGE_URL.$user['picture']; ?>" alt="Profile Picture" width="100">
     </p>
+
+    <input type="button" name="btn_back" value="Back" onclick="history.back()" />
 </body>
 </html>

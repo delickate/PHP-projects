@@ -82,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     //SANI:  If no errors, insert the user and assign roles
     if (empty($errors)) 
     {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
+        //$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $hashedPassword = md5($password);
         //SANI:  Insert user into `users` table
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password, phone, picture, status, is_default) VALUES (?, ?, ?, ?, ?, ?, 0)");
         $stmt->execute([$name, $email, $hashedPassword, $phone, $picture, $status]);
@@ -151,5 +151,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
         <button type="submit">Add User</button>
     </form>
+
+
+    <input type="button" name="btn_back" value="Back" onclick="history.back()" />
 </body>
 </html>

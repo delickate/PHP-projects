@@ -27,10 +27,10 @@ $totalPages = ceil($totalUsers / $limit);
 </head>
 <body>
     <h1>User Listings</h1>
-    <?php include '../common/navigations.php'; ?>
-
+    <?php include '../common/navigations.php'; //echo $currentUserId; ?>
+    <?php if (hasAddRight($currentUserId, 3, $pdo)): ?>
     <p align="right"><a href="<?php echo BASE_URL; ?>/users/users_add.php">Add</a></p>
-
+    <?php endif; ?>
     <table border="1" width="100%">
         <thead>
             <tr>
@@ -53,7 +53,14 @@ $totalPages = ceil($totalUsers / $limit);
                     <td>
                         <a href="<?php echo BASE_URL; ?>/users/users_detail.php?id=<?php echo $user['id']; ?>">View</a>
                         <?php if ($user['is_default'] == 0): ?>
+                            <?php if (hasEditRight($currentUserId, 3, $pdo)): ?>
                             <a href="<?php echo BASE_URL; ?>/users/users_edit.php?id=<?php echo $user['id']; ?>">Edit</a>
+                            <?php endif; ?>
+
+                            <?php if (hasDeleteRight($currentUserId, 3, $pdo)): ?>
+                            <a href="<?php echo BASE_URL; ?>/users/users_delete.php?id=<?php echo $user['id']; ?>" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                            <?php endif; ?>
+                      
                         <?php endif; ?>
                     </td>
                 </tr>
